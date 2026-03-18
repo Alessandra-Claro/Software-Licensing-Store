@@ -3,479 +3,400 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elevated Operations | AI Systems Architecture</title>
+    <title>Elevated Operations | IS-Engineered AI Systems</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
         
         :root {
-            --eo-primary: #8b5cf6;
-            --eo-bg: #050507;
-            --eo-card: #0f0f13;
-            --eo-accent: #d8b4fe;
+            --primary: #8b5cf6;
+            --unlv-red: #cf0a2c;
+            --bg: #030305;
+            --surface: #0a0a0f;
+            --border: rgba(255, 255, 255, 0.08);
         }
 
         body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--eo-bg); 
-            color: #ececed;
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg); 
+            color: #f4f4f5;
             scroll-behavior: smooth;
-            overflow-x: hidden;
         }
 
-        h1, h2, h3, .font-tech { font-family: 'Space Grotesk', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
 
-        .tech-logo {
+        /* Custom UI Enhancements */
+        .premium-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            transition: all 0.5s cubic-bezier(0.2, 1, 0.2, 1);
             position: relative;
-            width: 44px;
-            height: 44px;
+            overflow: hidden;
         }
 
-        .hex-outer {
-            width: 100%;
-            height: 100%;
-            background: var(--eo-primary);
-            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pulse-glow 3s infinite;
+        .premium-card:hover {
+            border-color: rgba(139, 92, 246, 0.4);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -20px rgba(0,0,0,0.8);
         }
 
-        .hex-inner {
-            width: 80%;
-            height: 80%;
-            background: var(--eo-bg);
-            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .hex-core {
-            width: 40%;
-            height: 40%;
-            background: var(--eo-primary);
-            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { filter: drop-shadow(0 0 2px var(--eo-primary)); }
-            50% { filter: drop-shadow(0 0 10px var(--eo-primary)); }
-        }
-
-        .glass-panel {
-            background: rgba(15, 15, 19, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
+        .unlv-gradient {
+            background: linear-gradient(135deg, #cf0a2c 0%, #800000 100%);
         }
 
         .glow-text {
-            text-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
-        }
-
-        /* Scanline Effect */
-        .scanline::after {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            z-index: 2;
-            background-size: 100% 3px, 3px 100%;
-            pointer-events: none;
-            opacity: 0.2;
+            text-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
         }
 
         .modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            z-index: 100;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
 
-        .modal-content {
-            background: var(--eo-card);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            max-width: 600px;
-            width: 100%;
-            border-radius: 24px;
-            padding: 40px;
-            position: relative;
+        /* Animation for the "Node" visualization */
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
         }
-
-        input, textarea {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            width: 100%;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--eo-primary);
-        }
+        .node-pulse { animation: pulse-slow 4s infinite ease-in-out; }
     </style>
 </head>
-<body class="antialiased scanline">
+<body class="antialiased">
 
-    <!-- NAVIGATION -->
-    <nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-black/40 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+    <!-- TOP NAVIGATION -->
+    <nav class="fixed top-0 w-full z-[100] border-b border-white/5 bg-black/60 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 h-24 flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <div class="tech-logo">
-                    <div class="hex-outer"><div class="hex-inner"><div class="hex-core"></div></div></div>
+                <div class="w-12 h-12 unlv-gradient rounded-xl flex items-center justify-center shadow-lg shadow-red-900/20">
+                    <span class="text-white font-black text-xl italic">EO</span>
                 </div>
-                <div class="flex flex-col">
-                    <span class="font-tech font-bold text-lg tracking-wider uppercase leading-none">Elevated</span>
-                    <span class="text-[10px] text-violet-400 font-bold uppercase tracking-[0.3em]">Operations</span>
+                <div>
+                    <span class="text-2xl font-bold tracking-tighter block">ELEVATED<span class="text-violet-500">OPS</span></span>
+                    <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-[0.4em] block mt-1">Information Systems Architecture</span>
                 </div>
             </div>
-            <div class="hidden md:flex gap-8 items-center text-[11px] font-bold tracking-widest text-zinc-500 uppercase">
-                <a href="#roi" class="hover:text-violet-400 transition-colors">ROI_Analysis</a>
-                <a href="#architecture" class="hover:text-violet-400 transition-colors">Architecture</a>
-                <a href="#pricing" class="hover:text-violet-400 transition-colors">Deployment</a>
-                <button onclick="openContact()" class="px-6 py-2 bg-violet-600 text-white rounded-full hover:bg-violet-500 transition-all shadow-lg shadow-violet-600/20">Analyze My Ops</button>
+            
+            <div class="hidden lg:flex items-center gap-10 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">
+                <a href="#logic" class="hover:text-violet-400 transition">Logic</a>
+                <a href="#deployments" class="hover:text-violet-400 transition">Deployments</a>
+                <a href="#credentials" class="hover:text-violet-400 transition">Credentials</a>
+                <button onclick="openAudit()" class="px-7 py-3 bg-violet-600 text-white rounded-full hover:bg-violet-500 transition-all btn-glow shadow-lg shadow-violet-600/20">Request Audit</button>
             </div>
         </div>
     </nav>
 
     <!-- HERO SECTION -->
-    <section class="relative min-h-screen flex items-center pt-20 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center z-10">
-            <div class="space-y-8">
-                <div class="inline-flex items-center gap-3 px-3 py-1 bg-violet-500/10 border border-violet-500/30 rounded-full">
-                    <span class="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse"></span>
-                    <span class="text-[10px] font-bold text-violet-300 uppercase tracking-widest">System Status: Optimal</span>
-                </div>
-                <h1 class="text-6xl md:text-8xl font-tech font-bold tracking-tighter leading-[0.9] glow-text">
-                    Engineering <br><span class="text-violet-500">Autonomous</span> Profit.
-                </h1>
-                <p class="text-lg text-zinc-400 leading-relaxed max-w-lg border-l-2 border-violet-500/30 pl-6">
-                    We transition traditional workflows into high-frequency AI ecosystems. Stop paying for manual labor; start investing in digital equity.
-                </p>
-                <div class="flex flex-wrap gap-4">
-                    <button onclick="document.getElementById('pricing').scrollIntoView()" class="px-8 py-4 bg-white text-black font-bold rounded-lg hover:bg-violet-500 hover:text-white transition-all">View Deployment Tiers</button>
-                    <button onclick="openContact()" class="px-8 py-4 bg-zinc-900 border border-white/10 text-white font-bold rounded-lg hover:bg-zinc-800 transition-all">Request Audit</button>
-                </div>
-            </div>
+    <section class="relative pt-64 pb-32 px-6 overflow-hidden">
+        <!-- Background Decor -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 opacity-20">
+            <div class="absolute top-40 left-1/4 w-96 h-96 bg-violet-600 rounded-full blur-[120px]"></div>
+            <div class="absolute bottom-20 right-1/4 w-96 h-96 bg-red-600 rounded-full blur-[120px]"></div>
+        </div>
 
-            <div class="relative hidden lg:block">
-                <div class="glass-panel rounded-3xl p-8 border border-white/10 relative">
-                    <div class="flex items-center justify-between mb-8">
-                        <div class="flex gap-1.5">
-                            <div class="w-2.5 h-2.5 rounded-full bg-red-500/50"></div>
-                            <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/50"></div>
-                            <div class="w-2.5 h-2.5 rounded-full bg-green-500/50"></div>
-                        </div>
-                        <span class="text-[10px] font-mono text-zinc-600">AI_CORE_OVERVIEW_v4</span>
-                    </div>
-                    <div class="space-y-6">
-                        <div class="bg-black/50 p-4 rounded-xl border border-white/5">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-[10px] font-bold text-zinc-500 uppercase">Operational Efficiency</span>
-                                <span id="efficiencyPct" class="text-violet-400 text-xs font-mono">92.1%</span>
-                            </div>
-                            <div class="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden">
-                                <div id="efficiencyBar" class="bg-violet-500 h-full w-[92%] transition-all duration-1000"></div>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-black/50 p-4 rounded-xl border border-white/5">
-                                <div class="text-[10px] font-bold text-zinc-500 uppercase mb-1">Human Overhead</div>
-                                <div class="text-xl font-mono text-white text-red-400">-84%</div>
-                            </div>
-                            <div class="bg-black/50 p-4 rounded-xl border border-white/5">
-                                <div class="text-[10px] font-bold text-zinc-500 uppercase mb-1">Active Agents</div>
-                                <div class="text-xl font-mono text-white">12</div>
-                            </div>
-                        </div>
-                        <div class="text-[10px] font-mono text-zinc-500 mt-4 leading-relaxed">
-                            > initializing neural pathways... <br>
-                            > scanning for manual bottlenecks... <br>
-                            > optimization protocol engaged.
-                        </div>
-                    </div>
-                </div>
-                <div class="absolute -top-20 -right-20 w-80 h-80 bg-violet-600/10 rounded-full blur-[120px] -z-10"></div>
+        <div class="max-w-7xl mx-auto text-center space-y-12">
+            <div class="inline-flex items-center gap-3 px-5 py-2 bg-zinc-900/50 border border-white/5 rounded-full backdrop-blur-md">
+                <div class="unlv-gradient h-2 w-2 rounded-full"></div>
+                <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">UNLV BSBA IS // Honors Graduate Deployment</span>
+            </div>
+            
+            <h1 class="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[0.85] glow-text">
+                Autonomous <br> <span class="text-violet-500 italic">Intelligence.</span>
+            </h1>
+            
+            <p class="text-xl md:text-2xl text-zinc-400 max-w-3xl mx-auto leading-relaxed font-light">
+                Bridging academic Information Systems science with high-frequency AI execution to eliminate operational friction.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-5 justify-center pt-8">
+                <a href="#deployments" class="px-12 py-5 bg-white text-black font-black rounded-2xl hover:bg-violet-600 hover:text-white transition-all text-lg shadow-2xl">Initialize Systems</a>
+                <button onclick="openAudit()" class="px-12 py-5 bg-zinc-900 border border-white/10 text-white font-bold rounded-2xl hover:bg-zinc-800 transition-all text-lg">Consultancy</button>
             </div>
         </div>
     </section>
 
-    <!-- ROI CALCULATOR -->
-    <section id="roi" class="py-32 px-6 bg-zinc-950/40 border-y border-white/5">
+    <!-- THE "WHY" / LOGIC SECTION -->
+    <section id="logic" class="py-32 px-6 border-y border-white/5 bg-zinc-950/20">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-3 gap-16">
+            <div class="space-y-4">
+                <div class="mono text-violet-500 text-xs font-bold uppercase tracking-widest">[01] Theoretical Rigor</div>
+                <h3 class="text-2xl font-bold">Scientific Basis</h3>
+                <p class="text-zinc-500 text-sm leading-relaxed">Unlike "AI prompt-hackers," we build on the foundations of Information Systems science—ensuring data integrity, security, and long-term scalability.</p>
+            </div>
+            <div class="space-y-4">
+                <div class="mono text-violet-500 text-xs font-bold uppercase tracking-widest">[02] Operational Recovery</div>
+                <h3 class="text-2xl font-bold">Time Arbitrage</h3>
+                <p class="text-zinc-500 text-sm leading-relaxed">We identify manual bottlenecks that consume your high-value time and replace them with neural nodes that work 168 hours a week.</p>
+            </div>
+            <div class="space-y-4">
+                <div class="mono text-violet-500 text-xs font-bold uppercase tracking-widest">[03] System Synergy</div>
+                <h3 class="text-2xl font-bold">Seamless Glue</h3>
+                <p class="text-zinc-500 text-sm leading-relaxed">We don't just add bots; we engineer the "connective tissue" between your CRM, Email, and Calendar for zero-touch workflows.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEPLOYMENT TIERS (PRODUCTS) -->
+    <section id="deployments" class="py-40 px-6">
         <div class="max-w-7xl mx-auto">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <div class="space-y-6">
-                    <h2 class="text-4xl font-tech font-bold tracking-tight uppercase">The Recovery Formula</h2>
-                    <p class="text-zinc-400">Traditional businesses "spend" on operations. Our clients "recover" capital. Calculate exactly how much manual friction is costing your company every year.</p>
-                    
-                    <div class="p-8 bg-zinc-900/50 rounded-2xl border border-white/5 space-y-10">
-                        <div>
-                            <div class="flex justify-between mb-4">
-                                <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest">Manual Staff Hours / Month</span>
-                                <span id="hoursVal" class="text-violet-400 font-mono">160 hrs</span>
+            <div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
+                <div class="max-w-2xl">
+                    <h2 class="text-5xl font-bold tracking-tight mb-6 uppercase">System <span class="text-violet-500">Manifest</span></h2>
+                    <p class="text-zinc-500">Professional-grade AI infrastructure deployed by an Honors Information Systems specialist.</p>
+                </div>
+                <div class="flex gap-4 mb-2">
+                    <div class="w-12 h-1 bg-violet-600 rounded-full"></div>
+                    <div class="w-4 h-1 bg-zinc-800 rounded-full"></div>
+                    <div class="w-4 h-1 bg-zinc-800 rounded-full"></div>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-10">
+                <!-- PRODUCT 1: THE SOP -->
+                <div class="premium-card p-12 rounded-[3rem] flex flex-col group">
+                    <div class="flex-grow space-y-6">
+                        <div class="flex justify-between items-start">
+                            <div class="p-4 bg-zinc-900 rounded-2xl border border-white/5 text-violet-400">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                             </div>
-                            <input type="range" id="hoursInput" min="40" max="2000" value="160" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-violet-500">
+                            <span class="mono text-[10px] text-zinc-600 font-bold uppercase tracking-widest pt-2">v.1.0 // ASSET</span>
                         </div>
-                        <div>
-                            <div class="flex justify-between mb-4">
-                                <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest">Average Hourly Burden</span>
-                                <span class="text-violet-400 font-mono">$<span id="rateVal">45</span></span>
+                        <h3 class="text-3xl font-bold">The AI <br>Operational SOP</h3>
+                        <p class="text-zinc-500 text-sm leading-relaxed">
+                            A 30-chapter, academic-grade manual based on advanced IS research. Professional training protocols to turn your staff into AI-augmented operators.
+                        </p>
+                        <ul class="space-y-3 text-xs text-zinc-400 font-bold">
+                            <li class="flex items-center gap-2"><div class="w-1 h-1 bg-violet-500 rounded-full"></div> 30-Page Professional Document</li>
+                            <li class="flex items-center gap-2"><div class="w-1 h-1 bg-violet-500 rounded-full"></div> Honors-Level Strategic Framework</li>
+                            <li class="flex items-center gap-2"><div class="w-1 h-1 bg-violet-500 rounded-full"></div> Immediate ROI via Staff Training</li>
+                        </ul>
+                    </div>
+                    <div class="mt-12 pt-8 border-t border-white/5 space-y-6">
+                        <div class="text-5xl font-bold tracking-tighter">$79<span class="text-sm text-zinc-700 font-normal">.00</span></div>
+                        <button onclick="openPlan('SOP')" class="w-full py-5 bg-white text-black font-black rounded-2xl hover:bg-violet-600 hover:text-white transition-all uppercase text-[10px] tracking-widest shadow-xl">Acquire Asset</button>
+                    </div>
+                </div>
+
+                <!-- PRODUCT 2: THE AGENT -->
+                <div class="premium-card p-12 rounded-[3rem] flex flex-col bg-violet-600/5 border-violet-500/30 scale-105 shadow-2xl z-10">
+                    <div class="absolute top-6 right-10 text-[10px] font-black text-violet-400 tracking-[0.3em] uppercase">Managed Node</div>
+                    <div class="flex-grow space-y-6 pt-4">
+                        <div class="p-4 bg-violet-600 rounded-2xl text-white shadow-lg shadow-violet-600/40 w-fit">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                        </div>
+                        <h3 class="text-3xl font-bold">Neural <br>Front Desk</h3>
+                        <p class="text-zinc-300 text-sm leading-relaxed">
+                            Custom-trained AI Agent architected on your unique business data. Handles qualification, FAQ, and SMS booking with human-like precision.
+                        </p>
+                        <ul class="space-y-3 text-xs text-violet-300 font-bold">
+                            <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-violet-400 rounded-full"></div> 24/7 Multi-Channel Response</li>
+                            <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-violet-400 rounded-full"></div> Dynamic Calendar Integration</li>
+                            <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-violet-400 rounded-full"></div> Fully Managed by our IS Team</li>
+                        </ul>
+                    </div>
+                    <div class="mt-12 pt-8 border-t border-white/10 space-y-6">
+                        <div class="text-5xl font-bold tracking-tighter text-white">$399<span class="text-sm text-violet-800 font-normal">/mo</span></div>
+                        <button onclick="openPlan('Agent')" class="w-full py-5 bg-violet-600 text-white font-black rounded-2xl hover:bg-violet-500 transition-all uppercase text-[10px] tracking-widest shadow-lg shadow-violet-600/30">Initialize Node</button>
+                    </div>
+                </div>
+
+                <!-- PRODUCT 3: GHOST OPS -->
+                <div class="premium-card p-12 rounded-[3rem] flex flex-col group">
+                    <div class="flex-grow space-y-6">
+                        <div class="flex justify-between items-start">
+                            <div class="p-4 bg-zinc-900 rounded-2xl border border-white/5 text-violet-400">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                             </div>
-                            <input type="range" id="rateInput" min="20" max="300" value="45" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-violet-500">
+                            <span class="mono text-[10px] text-zinc-600 font-bold uppercase tracking-widest pt-2">v.9.1 // SYSTEM</span>
+                        </div>
+                        <h3 class="text-3xl font-bold">Ghost <br>Operations</h3>
+                        <p class="text-zinc-500 text-sm leading-relaxed">
+                            Enterprise-level workflow overhaul. We integrate your stack (CRM, Billing, PM, Email) into a unified, zero-touch autonomous ecosystem.
+                        </p>
+                        <ul class="space-y-3 text-xs text-zinc-400 font-bold">
+                            <li class="flex items-center gap-2"><div class="w-1 h-1 bg-violet-500 rounded-full"></div> API-First System Design</li>
+                            <li class="flex items-center gap-2"><div class="w-1 h-1 bg-violet-500 rounded-full"></div> End-to-End Logic Mapping</li>
+                            <li class="flex items-center gap-2"><div class="w-1 h-1 bg-violet-500 rounded-full"></div> Permanent Overhead Reduction</li>
+                        </ul>
+                    </div>
+                    <div class="mt-12 pt-8 border-t border-white/5 space-y-6">
+                        <div class="text-5xl font-bold tracking-tighter">$1,499<span class="text-sm text-zinc-700 font-normal">.00</span></div>
+                        <button onclick="openAudit()" class="w-full py-5 border border-white/10 text-white font-black rounded-2xl hover:bg-white hover:text-black transition-all uppercase text-[10px] tracking-widest">Request Architecture</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CREDENTIALS / FOUNDER BIO -->
+    <section id="credentials" class="py-32 px-6 bg-zinc-950/40">
+        <div class="max-w-6xl mx-auto premium-card p-12 lg:p-20 rounded-[4rem] border-red-900/10">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div class="space-y-8">
+                    <div class="unlv-gradient px-4 py-1.5 rounded text-[10px] font-black text-white w-fit tracking-[0.2em]">UNLV ALUMNI OWNED</div>
+                    <h2 class="text-5xl font-bold tracking-tighter">Academic Rigor. <br>Industrial Speed.</h2>
+                    <p class="text-zinc-400 leading-relaxed text-lg">
+                        Elevated Operations is founded by a <strong>B.S. in Business Administration & Information Systems</strong> graduate from the <strong>University of Nevada, Las Vegas</strong>. 
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4 p-4 bg-black/40 rounded-2xl border border-white/5">
+                            <div class="w-2 h-12 unlv-gradient rounded-full"></div>
+                            <div>
+                                <div class="text-[10px] font-bold text-zinc-600 uppercase">Academic Status</div>
+                                <div class="font-bold text-white uppercase tracking-widest text-sm">Graduated with Honors</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 p-4 bg-black/40 rounded-2xl border border-white/5">
+                            <div class="w-2 h-12 bg-violet-600 rounded-full"></div>
+                            <div>
+                                <div class="text-[10px] font-bold text-zinc-600 uppercase">Velocity</div>
+                                <div class="font-bold text-white uppercase tracking-widest text-sm">Completed in 3 Years</div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="bg-zinc-900 rounded-3xl p-8 border border-white/10 shadow-2xl">
-                    <div class="text-center mb-8">
-                        <div class="text-xs font-bold text-zinc-500 uppercase mb-2">Annual Recovery Potential</div>
-                        <div id="totalSavings" class="text-6xl font-tech font-bold text-white glow-text">$86,400</div>
-                    </div>
-                    <div class="h-64">
-                        <canvas id="roiChart"></canvas>
+                <div class="relative">
+                    <div class="premium-card p-10 rounded-3xl border-violet-500/10 text-center space-y-6 bg-black">
+                        <div class="w-24 h-24 bg-zinc-900 rounded-full mx-auto border-2 border-violet-500/20 flex items-center justify-center">
+                            <svg class="w-10 h-10 text-zinc-700" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="text-xl font-bold">The Founder</div>
+                            <div class="text-xs font-bold text-violet-400 uppercase tracking-widest">BSBA + IS Specialist</div>
+                        </div>
+                        <p class="text-sm text-zinc-500 italic leading-relaxed">
+                            "In my IS training, I learned that systems fail because of human friction. We solve that by removing the human from the data-transfer equation."
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ARCHITECTURE / SERVICES -->
-    <section id="architecture" class="py-32 px-6">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-20 space-y-4">
-                <h2 class="text-4xl font-tech font-bold uppercase tracking-widest">System Architecture</h2>
-                <div class="w-24 h-1 bg-violet-600 mx-auto"></div>
+    <!-- LOSS COMPARISON CHART -->
+    <section class="py-32 px-6">
+        <div class="max-w-4xl mx-auto space-y-12">
+            <div class="text-center">
+                <h3 class="text-2xl font-bold mb-2 uppercase tracking-tight">System Efficiency Index</h3>
+                <p class="text-zinc-600 text-sm">Projected overhead reduction over 12 fiscal months</p>
             </div>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="p-8 border border-white/5 bg-zinc-900/20 rounded-2xl hover:bg-zinc-900/40 transition-all">
-                    <div class="w-12 h-12 bg-violet-500/10 rounded-lg flex items-center justify-center mb-6 text-violet-500">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4 font-tech">Neural Intake</h3>
-                    <p class="text-zinc-500 text-sm leading-relaxed">AI agents that monitor your inbox, SMS, and CRM 24/7. They qualify leads and handle objections before you even wake up.</p>
-                </div>
-                <div class="p-8 border border-white/5 bg-zinc-900/20 rounded-2xl hover:bg-zinc-900/40 transition-all">
-                    <div class="w-12 h-12 bg-violet-500/10 rounded-lg flex items-center justify-center mb-6 text-violet-500">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4 font-tech">Data Orchestration</h3>
-                    <p class="text-zinc-500 text-sm leading-relaxed">Syncing complex data across 5000+ apps. We eliminate the "copy-paste" middleman and ensure 100% data integrity.</p>
-                </div>
-                <div class="p-8 border border-white/5 bg-zinc-900/20 rounded-2xl hover:bg-zinc-900/40 transition-all">
-                    <div class="w-12 h-12 bg-violet-500/10 rounded-lg flex items-center justify-center mb-6 text-violet-500">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4 font-tech">Growth Analytics</h3>
-                    <p class="text-zinc-500 text-sm leading-relaxed">Proprietary dashboards that track your automation ROI in real-time. Know exactly which agent is generating the most profit.</p>
-                </div>
+            <div class="h-80 premium-card p-8 rounded-[2rem] border-white/5">
+                <canvas id="fiscalChart"></canvas>
             </div>
         </div>
     </section>
 
-    <!-- PRICING / DEPLOYMENT -->
-    <section id="pricing" class="py-32 px-6 bg-zinc-950">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-20">
-                <h2 class="text-4xl font-tech font-bold uppercase tracking-widest mb-4">Deployment Tiers</h2>
-                <p class="text-zinc-500">Select the level of autonomy required for your organization.</p>
+    <!-- FOOTER / AUDIT FORM -->
+    <footer class="py-32 px-6 border-t border-white/5 bg-zinc-950">
+        <div class="max-w-2xl mx-auto text-center space-y-12">
+            <div class="space-y-4">
+                <h2 class="text-4xl font-bold tracking-tighter">Initiate Audit.</h2>
+                <p class="text-zinc-500 text-sm">Describe your manual bottleneck and receive a high-level IS blueprint within 24 hours.</p>
             </div>
             
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- TIER 1 -->
-                <div class="bg-zinc-900/40 p-10 rounded-2xl border border-white/5 flex flex-col hover:border-violet-500/30 transition-all">
-                    <div class="mb-8">
-                        <h3 class="text-xl font-bold mb-1">EO_Core</h3>
-                        <p class="text-xs text-zinc-500">Ideal for solopreneurs.</p>
-                    </div>
-                    <div class="text-4xl font-tech font-bold mb-10">$150<span class="text-xs text-zinc-600">/month</span></div>
-                    <ul class="space-y-4 mb-10 flex-grow text-sm text-zinc-400">
-                        <li class="flex items-center gap-3 font-mono">✓ 1 Dedicated Neural Agent</li>
-                        <li class="flex items-center gap-3 font-mono">✓ Basic CRM Integration</li>
-                        <li class="flex items-center gap-3 font-mono">✓ Weekly Health Reports</li>
-                    </ul>
-                    <button onclick="openDetails('Core')" class="w-full py-3 block text-center rounded border border-white/10 font-bold text-xs uppercase hover:bg-white hover:text-black transition-all tracking-widest">Learn More</button>
+            <form id="auditForm" class="space-y-4">
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <input type="text" placeholder="Legal Name" class="w-full p-5 bg-zinc-900 border border-white/5 rounded-2xl focus:border-violet-500 outline-none transition-all" required>
+                    <input type="email" placeholder="Corporate Email" class="w-full p-5 bg-zinc-900 border border-white/5 rounded-2xl focus:border-violet-500 outline-none transition-all" required>
                 </div>
-
-                <!-- TIER 2 -->
-                <div class="bg-violet-950/10 p-10 rounded-2xl border border-violet-500 flex flex-col relative shadow-2xl scale-105">
-                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-violet-600 text-[9px] font-black uppercase tracking-[0.2em] rounded">High Conversion</div>
-                    <div class="mb-8">
-                        <h3 class="text-xl font-bold mb-1">EO_Integrated</h3>
-                        <p class="text-xs text-violet-300">The Operations Hub.</p>
-                    </div>
-                    <div class="text-4xl font-tech font-bold mb-10">$450<span class="text-xs text-zinc-600">/month</span></div>
-                    <ul class="space-y-4 mb-10 flex-grow text-sm text-zinc-200">
-                        <li class="flex items-center gap-3 font-mono">✓ Multi-Agent Orchestration</li>
-                        <li class="flex items-center gap-3 font-mono">✓ End-to-End Logic Design</li>
-                        <li class="flex items-center gap-3 font-mono">✓ Real-time ROI Dashboard</li>
-                        <li class="flex items-center gap-3 font-mono">✓ 24/7 Agent Monitoring</li>
-                    </ul>
-                    <button onclick="openDetails('Integrated')" class="w-full py-4 block text-center rounded bg-violet-600 text-white font-bold text-xs uppercase hover:bg-violet-500 transition-all tracking-widest shadow-lg shadow-violet-600/30">Select Protocol</button>
-                </div>
-
-                <!-- TIER 3 -->
-                <div class="bg-zinc-900/40 p-10 rounded-2xl border border-white/5 flex flex-col hover:border-violet-500/30 transition-all">
-                    <div class="mb-8">
-                        <h3 class="text-xl font-bold mb-1">EO_Bespoke</h3>
-                        <p class="text-xs text-zinc-500">Enterprise Engineering.</p>
-                    </div>
-                    <div class="text-4xl font-tech font-bold mb-10">$1,500<span class="text-xs text-zinc-600">/deploy</span></div>
-                    <ul class="space-y-4 mb-10 flex-grow text-sm text-zinc-400">
-                        <li class="flex items-center gap-3 font-mono">✓ Custom LLM Fine-Tuning</li>
-                        <li class="flex items-center gap-3 font-mono">✓ Proprietary Data Security</li>
-                        <li class="flex items-center gap-3 font-mono">✓ Implementation & Training</li>
-                    </ul>
-                    <button onclick="openDetails('Bespoke')" class="w-full py-3 block text-center rounded border border-white/10 font-bold text-xs uppercase hover:bg-white hover:text-black transition-all tracking-widest">Consult</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CONTACT FORM (Reused your property management logic) -->
-    <section id="contact" class="py-32 px-6">
-        <div class="max-w-3xl mx-auto glass-panel p-12 rounded-3xl border border-violet-500/20">
-            <h2 class="text-3xl font-tech font-bold mb-8">System Audit Request</h2>
-            <form id="auditForm" class="space-y-6">
-                <div class="grid md:grid-cols-2 gap-6">
-                    <input type="text" name="firstName" placeholder="First Name" required>
-                    <input type="text" name="lastName" placeholder="Last Name" required>
-                </div>
-                <input type="email" name="email" placeholder="Corporate Email" required>
-                <input type="text" name="property" placeholder="Current Monthly Ops Spend ($)" required>
-                <textarea name="inquiry" rows="4" placeholder="Describe your biggest manual bottleneck..."></textarea>
-                <button type="submit" class="w-full py-4 bg-violet-600 text-white font-bold rounded-lg hover:bg-violet-500 transition-all">Submit for Analysis</button>
+                <textarea rows="4" placeholder="Briefly describe your current manual operation workflow..." class="w-full p-5 bg-zinc-900 border border-white/5 rounded-2xl focus:border-violet-500 outline-none transition-all"></textarea>
+                <button class="w-full py-6 bg-violet-600 text-white font-black rounded-2xl hover:bg-violet-500 transition-all text-lg shadow-xl shadow-violet-600/20">Submit Protocol</button>
             </form>
-            <div id="formSuccess" class="hidden mt-6 p-4 bg-green-500/20 border border-green-500/50 rounded text-center text-green-300">
-                Audit request received. Our agents are analyzing your data.
+            
+            <div id="successMsg" class="hidden p-8 premium-card rounded-3xl text-violet-400 border-violet-500/30">
+                <div class="text-xl font-bold">Protocol Acknowledged.</div>
+                <p class="text-xs mt-2 opacity-60 uppercase tracking-widest">A specialist is reviewing your architecture.</p>
             </div>
-        </div>
-    </section>
 
-    <!-- FOOTER -->
-    <footer class="py-20 px-6 border-t border-white/5">
-        <div class="max-w-7xl mx-auto flex flex-col items-center space-y-8">
-            <div class="flex items-center gap-4 opacity-50">
-                <div class="tech-logo scale-75">
-                    <div class="hex-outer"><div class="hex-inner"><div class="hex-core"></div></div></div>
-                </div>
-                <div class="flex flex-col">
-                    <span class="font-tech font-bold tracking-wider uppercase leading-none">Elevated</span>
-                    <span class="text-[8px] text-zinc-500 font-bold uppercase tracking-[0.3em]">Operations</span>
-                </div>
+            <div class="pt-20 opacity-30">
+                <div class="text-[10px] font-bold uppercase tracking-[1em] mb-4">Elevated Operations</div>
+                <div class="text-[9px] font-bold text-zinc-600">UNLV HONORS // BSBA + IS ARCHITECTURE // EST 2026</div>
             </div>
-            <p class="text-[10px] text-zinc-700 font-mono tracking-tighter uppercase">Protocol: [EO-SECURE-9] // Deployment: Cloud_Native</p>
         </div>
     </footer>
 
-    <!-- MODAL FOR PLAN DETAILS -->
-    <div id="detailsModal" class="modal-overlay" onclick="closeModal(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <h2 id="modalTitle" class="text-3xl font-tech font-bold mb-4 text-violet-400"></h2>
-            <p id="modalDesc" class="text-zinc-400 mb-8 leading-relaxed"></p>
-            <div id="modalFeatures" class="space-y-3 mb-8"></div>
-            <a id="stripeLink" href="#" class="inline-block px-8 py-4 bg-violet-600 text-white font-bold rounded-lg w-full text-center hover:bg-violet-500">Initialize Deployment</a>
-            <button onclick="closeModal()" class="block w-full text-center mt-4 text-zinc-600 text-xs uppercase font-bold">Cancel</button>
+    <!-- MODAL POPUP -->
+    <div id="planModal" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-content premium-card p-12 rounded-[4rem] max-w-lg w-full" onclick="event.stopPropagation()">
+            <div id="modalLabel" class="text-[10px] font-black text-violet-500 uppercase tracking-[0.3em] mb-4">SYSTEM_DEPLOYMENT</div>
+            <h2 id="modalTitle" class="text-4xl font-bold mb-4 tracking-tighter"></h2>
+            <p id="modalDesc" class="text-zinc-500 mb-10 leading-relaxed text-sm"></p>
+            
+            <div class="p-8 bg-black/50 rounded-3xl border border-white/5 mb-10">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-zinc-600 uppercase tracking-widest">Initial Investment:</span>
+                    <span id="modalPrice" class="text-3xl font-bold text-white"></span>
+                </div>
+            </div>
+
+            <a id="modalLink" href="#" class="block w-full py-6 bg-violet-600 text-center text-white font-black rounded-2xl hover:bg-violet-500 transition-all shadow-xl shadow-violet-600/30 uppercase tracking-widest text-xs">Authorize Transaction</a>
+            <button onclick="closeModal()" class="w-full mt-6 text-zinc-700 text-[10px] font-bold uppercase tracking-widest hover:text-white transition-colors">Abort Deployment</button>
         </div>
     </div>
 
     <script>
-        // --- DATA OBJECTS ---
         const plans = {
-            'Core': {
-                title: 'EO_Core Deployment',
-                desc: 'The essential AI foundation for solopreneurs. This replaces up to 20 hours of manual administration per week.',
-                features: ['✓ 1 AI Email Agent', '✓ Auto-Booking Logic', '✓ Lead Qualification Flow', '✓ Monthly Maintenance'],
+            SOP: {
+                title: 'AI Operational SOP',
+                desc: 'Acquire the 30-chapter academic framework for AI-augmented staffing. Built on peer-reviewed Information Systems principles to ensure error-free operational scaling.',
+                price: '$79.00',
                 link: 'https://buy.stripe.com/test_dRmdRb2Sn8Qf0Gz7jT6c000'
             },
-            'Integrated': {
-                title: 'EO_Integrated Ecosystem',
-                desc: 'The powerhouse for growing teams. We build a custom brain for your business that links every department together.',
-                features: ['✓ Multi-Platform Agents', '✓ Custom Knowledge Base', '✓ CRM Sync (Salesforce/Hubspot)', '✓ Real-time ROI Tracking'],
+            Agent: {
+                title: 'Neural Front Desk',
+                desc: 'Deploy a managed AI node. Our IS team handles training, architecture, and monthly optimization to ensure 100% lead capture efficiency.',
+                price: '$399.00/mo',
                 link: 'https://buy.stripe.com/test_6oUaEZ3Wrc2rdtl9s16c001'
-            },
-            'Bespoke': {
-                title: 'EO_Bespoke Architecture',
-                desc: 'Enterprise-grade custom development. We build proprietary models that give you a permanent competitive advantage.',
-                features: ['✓ Custom Model Fine-Tuning', '✓ White-Label Solutions', '✓ Full Source Code Access', '✓ Dedicated Architect'],
-                link: 'https://buy.stripe.com/test_8x2bJ3boT2rR1KD6fP6c002'
             }
         };
 
-        // --- MODAL LOGIC ---
-        function openDetails(planKey) {
-            const plan = plans[planKey];
-            document.getElementById('modalTitle').innerText = plan.title;
-            document.getElementById('modalDesc').innerText = plan.desc;
-            document.getElementById('stripeLink').href = plan.link;
-            
-            const featuresDiv = document.getElementById('modalFeatures');
-            featuresDiv.innerHTML = plan.features.map(f => `<div class="text-sm font-mono text-zinc-300">${f}</div>`).join('');
-            
-            document.getElementById('detailsModal').style.display = 'flex';
+        function openPlan(key) {
+            const p = plans[key];
+            document.getElementById('modalTitle').innerText = p.title;
+            document.getElementById('modalDesc').innerText = p.desc;
+            document.getElementById('modalPrice').innerText = p.price;
+            document.getElementById('modalLink').href = p.link;
+            document.getElementById('planModal').style.display = 'flex';
         }
 
         function closeModal() {
-            document.getElementById('detailsModal').style.display = 'none';
+            document.getElementById('planModal').style.display = 'none';
         }
 
-        function openContact() {
-            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        function openAudit() {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
 
-        // --- ROI CALCULATOR LOGIC ---
-        const hIn = document.getElementById('hoursInput');
-        const rIn = document.getElementById('rateInput');
-        const hVal = document.getElementById('hoursVal');
-        const rVal = document.getElementById('rateVal');
-        const sVal = document.getElementById('totalSavings');
+        document.getElementById('auditForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            this.classList.add('hidden');
+            document.getElementById('successMsg').classList.remove('hidden');
+        });
 
-        let chart;
-
-        function updateROI() {
-            const h = parseInt(hIn.value);
-            const r = parseInt(rIn.value);
-            const total = h * r * 12;
-
-            hVal.innerText = h + ' hrs';
-            rVal.innerText = r;
-            sVal.innerText = '$' + total.toLocaleString();
-
-            if (chart) {
-                chart.data.datasets[0].data = [total * 0.1, total * 0.35, total * 0.6, total * 0.8, total];
-                chart.update();
-            }
-        }
-
-        hIn.addEventListener('input', updateROI);
-        rIn.addEventListener('input', updateROI);
-
-        // --- CHART INIT ---
         window.onload = function() {
-            const ctx = document.getElementById('roiChart').getContext('2d');
-            chart = new Chart(ctx, {
+            const ctx = document.getElementById('fiscalChart').getContext('2d');
+            new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Start', 'Month 3', 'Month 6', 'Month 9', 'Year 1'],
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
                     datasets: [{
-                        label: 'Capital Recovered',
-                        data: [8640, 30000, 50000, 70000, 86400],
+                        label: 'Operational Profit Gap',
+                        data: [20, 45, 75, 95],
                         borderColor: '#8b5cf6',
                         backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                        borderWidth: 3,
                         fill: true,
                         tension: 0.4,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#8b5cf6'
+                        borderWidth: 5,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#fff'
                     }]
                 },
                 options: {
@@ -483,33 +404,12 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        x: { grid: { display: false }, ticks: { color: '#52525b', font: { size: 9 } } },
-                        y: { grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#52525b', font: { size: 9 } } }
+                        y: { display: false },
+                        x: { grid: { display: false }, ticks: { color: '#3f3f46', font: { size: 10, weight: 'bold' } } }
                     }
                 }
             });
-            updateROI();
-
-            // Simulate live efficiency changes
-            setInterval(() => {
-                const base = 90;
-                const variance = Math.random() * 5;
-                const final = (base + variance).toFixed(1);
-                document.getElementById('efficiencyPct').innerText = final + '%';
-                document.getElementById('efficiencyBar').style.width = final + '%';
-            }, 3000);
         };
-
-        // --- FORM HANDLING ---
-        document.getElementById('auditForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            this.classList.add('opacity-50', 'pointer-events-none');
-            // Simulate processing time
-            setTimeout(() => {
-                this.classList.add('hidden');
-                document.getElementById('formSuccess').classList.remove('hidden');
-            }, 1500);
-        });
     </script>
 </body>
 </html>
